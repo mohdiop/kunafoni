@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class EmployeDAOImpl implements EmployesDAO {
+public class EmployesDAOImpl implements EmployesDAO {
 
     private Connection pg = new PostgresDB().connection;
 
@@ -75,7 +75,7 @@ public class EmployeDAOImpl implements EmployesDAO {
     }
 
     @Override
-    public Boolean createNewEmployee(Employe newEmployee) throws SQLException {
+    public Boolean addNewEmployee(Employe newEmployee) throws SQLException {
         String query = String.format("insert into employes (identifiant, motDePasse, poste, departement) values (%s, %s, %s, %s)", newEmployee.getIdentifiant(), newEmployee.getMotDePasse(), newEmployee.getPoste(), newEmployee.getPoste());
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         return preparedStatement.execute();

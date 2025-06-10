@@ -20,5 +20,5 @@ public interface EmployesDAO {
 
     Boolean deleteEmployeeById(String employeeId) throws SQLException;
 
-    Boolean createNewEmployee(Employe newEmployee) throws SQLException;
+    Boolean addNewEmployee(Employe newEmployee) throws SQLException;
 }

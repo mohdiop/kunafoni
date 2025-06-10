@@ -31,9 +31,9 @@ public class PostgresDB {
     public void initialize() {
         try {
             ArrayList<PreparedStatement> preparedStatements = new ArrayList<>();
-            ArrayList<String> sqls = getInitializationQueries();
-            for (String sql : sqls) {
-                preparedStatements.add(this.connection.prepareStatement(sql));
+            ArrayList<String> queries = getInitializationQueries();
+            for (String query : queries) {
+                preparedStatements.add(this.connection.prepareStatement(query));
             }
             for (PreparedStatement preparedStatement : preparedStatements) {
                 preparedStatement.execute();
@@ -45,12 +45,13 @@ public class PostgresDB {
     }
 
     private static ArrayList<String> getInitializationQueries() {
-        ArrayList<String> sqls = new ArrayList<>();
-        sqls.add("create table if not exists employes (identifiant varchar(12) not null primary key, motDePasse varchar(50) not null, poste varchar(50) not null);");
-        sqls.add("create table if not exists sci (identifiant varchar(5) primary key not null, motDePasse varchar(50) not null);");
-        sqls.add("create table if not exists canaux_diffusion (id int primary key not null, titre varchar(50) not null);");
-        sqls.add("create table if not exists abonnements (id int primary key not null, idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant));");
-        sqls.add("create table if not exists notification (id int primary key not null, message varchar(255) not null, identifiantExpediteur varchar(12) not null references employes(identifiant));");
-        return sqls;
+        ArrayList<String> queries = new ArrayList<>();
+        queries.add("create table if not exists employes (identifiant varchar(12) not null primary key, motDePasse varchar(50) not null, poste varchar(50) not null);");
+        queries.add("create table if not exists sci (identifiant varchar(5) primary key not null, motDePasse varchar(50) not null);");
+        queries.add("create table if not exists canaux_diffusion (id int primary key not null auto-increment, titre varchar(50) not null);");
+        queries.add("create table if not exists abonnements (id int primary key not null auto-increment, idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant));");
+        queries.add("create table if not exists notification (id int primary key not null auto-increment, message varchar(255) not null, identifiantExpediteur varchar(12) not null references employes(identifiant));");
+        queries.add("create table if not exists entreprise (nom varchar(50) not null)");
+        return queries;
     }
 }
