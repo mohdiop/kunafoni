@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class NotificationDAOImpl implements NotificationDAO {
-    private Connection pg = new PostgresDB().connection;
+    private final Connection pg = PostgresDB.getInstance().connection;
 
     @Override
     public Notification getNotificationById(int id) throws SQLException {

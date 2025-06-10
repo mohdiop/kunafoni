@@ -13,7 +13,14 @@ public class PostgresDB {
 
     private static volatile PostgresDB instance;
 
-    public PostgresDB() {
+    public static synchronized PostgresDB getInstance() {
+        if(instance == null){
+            instance = new PostgresDB();
+        }
+        return instance;
+    }
+
+    private PostgresDB() {
         String url = "jdbc:postgresql://localhost/kunafoni";
         Properties props = new Properties();
         props.setProperty("user", "postgres");
