@@ -5,11 +5,15 @@ import org.mindrot.jbcrypt.BCrypt;
 public class Employe {
     private String identifiant;
     private String motDePasse;
+    private String nom;
+    private String prenom;
     private String poste;
     private String departement;
 
-    public Employe(String identifiant, String motDePasse, String poste, String departement){
+    public Employe(String identifiant, String motDePasse, String nom, String prenom, String poste, String departement){
         this.identifiant = identifiant;
+        this.nom = nom;
+        this.prenom = prenom;
         this.motDePasse = BCrypt.hashpw(motDePasse, BCrypt.gensalt());
         this.poste = poste;
         this.departement = departement;
@@ -45,5 +49,21 @@ public class Employe {
 
     public void setDepartement(String departement) {
         this.departement = departement;
+    }
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 }

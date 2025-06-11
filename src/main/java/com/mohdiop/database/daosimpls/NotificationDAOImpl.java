@@ -18,10 +18,12 @@ public class NotificationDAOImpl implements NotificationDAO {
         String query = "select * from notification where id = " + id;
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
+        resultSet.next();
         return new Notification(
                 resultSet.getInt("id"),
                 resultSet.getString("message"),
-                resultSet.getString("idExpediteur")
+                resultSet.getString("identifiantExpediteur"),
+                resultSet.getInt("canalId")
         );
     }
 
@@ -35,7 +37,25 @@ public class NotificationDAOImpl implements NotificationDAO {
             notifications.add(new Notification(
                     resultSet.getInt("id"),
                     resultSet.getString("message"),
-                    resultSet.getString("idExpediteur")
+                    resultSet.getString("identifiantExpediteur"),
+                    resultSet.getInt("canalId")
+            ));
+        }
+        return notifications;
+    }
+
+    @Override
+    public ArrayList<Notification> getNotificationsByChannelId(int channelId) throws SQLException {
+        String query = "select * from notification where canalId = " + channelId;
+        PreparedStatement preparedStatement = pg.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        ArrayList<Notification> notifications = new ArrayList<>();
+        while (resultSet.next()) {
+            notifications.add(new Notification(
+                    resultSet.getInt("id"),
+                    resultSet.getString("message"),
+                    resultSet.getString("identifiantExpediteur"),
+                    resultSet.getInt("canalId")
             ));
         }
         return notifications;
@@ -43,9 +63,10 @@ public class NotificationDAOImpl implements NotificationDAO {
 
     @Override
     public Boolean addNewNotification(Notification notification) throws SQLException {
-        String query = String.format("insert into notification (message, idExpediteur) values (%s, %s)",
-                notification.getMessage(), notification.getIdExpediteur());
+        String query = String.format("insert into notification (message, identifiantExpediteur, canalId) values ('%s', '%s', '%s')",
+                notification.getMessage(), notification.getIdExpediteur(), notification.getIdCanal());
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 }

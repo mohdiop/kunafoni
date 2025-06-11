@@ -10,5 +10,7 @@ public interface NotificationDAO {
 
     ArrayList<Notification> getAllNotifications() throws SQLException;
 
+    ArrayList<Notification> getNotificationsByChannelId(int channelId) throws SQLException;
+
     Boolean addNewNotification(Notification notification) throws SQLException;
 }

@@ -3,7 +3,6 @@ package com.mohdiop.database.daosimpls;
 import com.mohdiop.database.PostgresDB;
 import com.mohdiop.database.daos.SCIDAO;
 import com.mohdiop.database.models.SCI;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,21 +14,21 @@ public class SCIDAOImpl implements SCIDAO {
 
     @Override
     public Boolean initializeSCI(SCI sci) throws SQLException {
-        if (isAlreadyCreatedSCI()) {
-            return true;
-        } else {
-            String query = String.format("insert into sci (identifiant, motDePasse) values (%s, %s)",
+        if (!isAlreadyCreatedSCI()) {
+            String query = String.format("insert into sci (identifiant, motDePasse) values ('%s', '%s')",
                     sci.getIdentifiant(), sci.getMotDePasse());
             PreparedStatement preparedStatement = pg.prepareStatement(query);
-            return preparedStatement.execute();
+            preparedStatement.execute();
         }
+        return true;
     }
 
     @Override
     public Boolean updatePassword(String newPassword) throws SQLException {
-        String query = "update sci set motDePasse = " + newPassword;
+        String query = "update sci set motDePasse = '" + newPassword + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class SCIDAOImpl implements SCIDAO {
         String query = "select * from sci";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.first();
+        resultSet.next();
         return new SCI(
                 resultSet.getString("motDePasse")
         );
@@ -47,6 +46,6 @@ public class SCIDAOImpl implements SCIDAO {
         String query = "select * from sci";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        return resultSet.first();
+        return resultSet.next();
     }
 }

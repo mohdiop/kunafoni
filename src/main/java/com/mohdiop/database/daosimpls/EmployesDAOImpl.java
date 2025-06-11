@@ -3,6 +3,8 @@ package com.mohdiop.database.daosimpls;
 import com.mohdiop.database.PostgresDB;
 import com.mohdiop.database.daos.EmployesDAO;
 import com.mohdiop.database.models.Employe;
+import com.mohdiop.utilities.Utilities;
+import jdk.jshell.execution.Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,20 +18,34 @@ public class EmployesDAOImpl implements EmployesDAO {
 
     @Override
     public Employe getEmployeeById(String id) throws SQLException {
-        String query = "select * from employes where identifiant = " + id;
+        String query = "select * from employes where identifiant = '" + id + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
-        return new Employe(resultSet.getString("identifiant"), resultSet.getString("motDePasse"), resultSet.getString("poste"), resultSet.getString("departement"));
+        if(resultSet.next()){
+            return new Employe(resultSet.getString("identifiant"),
+                    resultSet.getString("motDePasse"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getString("poste"),
+                    resultSet.getString("departement"));
+        }else {
+            return null;
+        }
     }
 
     @Override
     public ArrayList<Employe> getEmployeesByDepartment(String department) throws SQLException {
-        String query = "select *  from employes where departement = " + department;
+        String query = "select *  from employes where departement = '" + department + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Employe> employes = new ArrayList<>();
         while (resultSet.next()) {
-            employes.add(new Employe(resultSet.getString("identifiant"), resultSet.getString("motDePasse"), resultSet.getString("poste"), resultSet.getString("departement")));
+            employes.add(new Employe(resultSet.getString("identifiant"),
+                    resultSet.getString("motDePasse"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getString("poste"),
+                    resultSet.getString("departement")));
         }
         return employes;
     }
@@ -41,44 +57,73 @@ public class EmployesDAOImpl implements EmployesDAO {
         ResultSet resultSet = preparedStatement.executeQuery();
         ArrayList<Employe> employes = new ArrayList<>();
         while (resultSet.next()) {
-            employes.add(new Employe(resultSet.getString("identifiant"), resultSet.getString("motDePasse"), resultSet.getString("poste"), resultSet.getString("departement")));
+            employes.add(new Employe(resultSet.getString("identifiant"),
+                    resultSet.getString("motDePasse"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getString("poste"),
+                    resultSet.getString("departement")));
         }
         return employes;
     }
 
     @Override
     public Boolean updatePassword(String employeeId, String newPassword) throws SQLException {
-        String query = "update employes set motDePasse = " + newPassword + " where identifiant = " + employeeId;
+        String query = "update employes set motDePasse = '" + newPassword + "' where identifiant = '" + employeeId +"'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 
     @Override
     public Boolean updatePosition(String employeeId, String newPosition) throws SQLException {
-        String query = "update employes set poste = " + newPosition + " where identifiant = " + employeeId;
+        String query = "update employes set poste = '" + newPosition + "' where identifiant = '" + employeeId + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 
     @Override
     public Boolean updateDepartment(String employeeId, String newDepartment) throws SQLException {
-        String query = "update employes set poste = " + newDepartment + " where identifiant = " + employeeId;
+        String query = "update employes set departement = '" + newDepartment + "' where identifiant = '" + employeeId + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 
     @Override
     public Boolean deleteEmployeeById(String employeeId) throws SQLException {
-        String query = "delete from employes where identifiant = " + employeeId;
+        String query = "delete from employes where identifiant = '" + employeeId + "'";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        preparedStatement.execute();
+        return true;
     }
 
     @Override
     public Boolean addNewEmployee(Employe newEmployee) throws SQLException {
-        String query = String.format("insert into employes (identifiant, motDePasse, poste, departement) values (%s, %s, %s, %s)",
-                newEmployee.getIdentifiant(), newEmployee.getMotDePasse(), newEmployee.getPoste(), newEmployee.getPoste());
+        if (isAlreadyChosenIdentifiantNumber(
+                newEmployee.getIdentifiant().substring(9, 12)
+        )){
+            newEmployee.setIdentifiant("kunafoni-"+ Utilities.generateIdentifiantNumber());
+            return addNewEmployee(newEmployee);
+        } else {
+            String query = String.format("insert into employes (identifiant, nom, prenom, motDePasse, poste, departement) values ('%s', '%s', '%s', '%s', '%s', '%s')",
+                    newEmployee.getIdentifiant(), newEmployee.getNom(), newEmployee.getPrenom(), newEmployee.getMotDePasse(), newEmployee.getPoste(), newEmployee.getDepartement());
+            PreparedStatement preparedStatement = pg.prepareStatement(query);
+            preparedStatement.execute();
+            return true;
+        }
+    }
+
+    private Boolean isAlreadyChosenIdentifiantNumber(String identifiantNumber) throws SQLException {
+        String query = "select * from employes";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
-        return preparedStatement.execute();
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            if(resultSet.getString("identifiant").contains(identifiantNumber)){
+                return true;
+            }
+        }
+        return false;
     }
 }
