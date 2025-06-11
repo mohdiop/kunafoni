@@ -1,12 +1,13 @@
+import authtest.AuthenticationTest;
 import impltest.NotificationDAOImplTest;
 
 import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        NotificationDAOImplTest test = new NotificationDAOImplTest();
+        AuthenticationTest test = new AuthenticationTest();
         try {
-            test.getAllNotifications();
+            test.login("admin", "admin", 1);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

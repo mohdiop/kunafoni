@@ -1,5 +1,7 @@
 package com.mohdiop.database;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -59,6 +61,8 @@ public class PostgresDB {
         queries.add("create table if not exists abonnements (idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant), primary key (idCanal, idEmploye));");
         queries.add("create table if not exists notification (id serial primary key not null, message varchar(255) not null, identifiantExpediteur varchar(12) not null references employes(identifiant), canalId int not null references canaux_diffusion(id));");
         queries.add("create table if not exists entreprise (nom varchar(50) not null)");
+        queries.add(String.format("insert into sci (identifiant, motDePasse) values ('%s', '%s')",
+                "admin", BCrypt.hashpw("admin", BCrypt.gensalt())));
         return queries;
     }
 }
