@@ -1,15 +1,9 @@
-import authtest.AuthenticationTest;
-import impltest.NotificationDAOImplTest;
+import com.mohdiop.views.AuthenticationView;
 
 import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) {
-        AuthenticationTest test = new AuthenticationTest();
-        try {
-            test.login("admin", "admin", 1);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    public static void main(String[] args) throws SQLException {
+        AuthenticationView.authenticationScreen();
     }
 }

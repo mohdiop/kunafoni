@@ -1,5 +1,6 @@
 package com.mohdiop.database;
 
+import com.mohdiop.database.daosimpls.SCIDAOImpl;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
@@ -11,16 +12,8 @@ import java.util.Properties;
 
 public class PostgresDB {
 
-    public Connection connection;
-
     private static volatile PostgresDB instance;
-
-    public static synchronized PostgresDB getInstance() {
-        if(instance == null){
-            instance = new PostgresDB();
-        }
-        return instance;
-    }
+    public Connection connection;
 
     private PostgresDB() {
         String url = "jdbc:postgresql://localhost/kunafoni";
@@ -30,11 +23,28 @@ public class PostgresDB {
 
         try {
             this.connection = DriverManager.getConnection(url, props);
-            System.out.println("Connected Successfully");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
         initialize();
+    }
+
+    public static synchronized PostgresDB getInstance() {
+        if (instance == null) {
+            instance = new PostgresDB();
+        }
+        return instance;
+    }
+
+    private static ArrayList<String> getInitializationQueries() throws SQLException {
+        ArrayList<String> queries = new ArrayList<>();
+        queries.add("create table if not exists employes (identifiant varchar(12) not null primary key, nom varchar(255) not null, prenom varchar(255) not null, departement varchar(255) not null, motDePasse varchar(255) not null, poste varchar(50) not null);");
+        queries.add("create table if not exists sci (identifiant varchar(5) primary key not null, motDePasse varchar(255) not null);");
+        queries.add("create table if not exists canaux_diffusion (id serial primary key not null, titre varchar(50) not null);");
+        queries.add("create table if not exists abonnements (idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant), primary key (idCanal, idEmploye));");
+        queries.add("create table if not exists notification (id serial primary key not null, message varchar(255) not null, identifiantExpediteur varchar(12) not null references employes(identifiant), canalId int not null references canaux_diffusion(id));");
+        queries.add("create table if not exists entreprise (nom varchar(50) not null)");
+        return queries;
     }
 
     private void initialize() {
@@ -47,22 +57,8 @@ public class PostgresDB {
             for (PreparedStatement preparedStatement : preparedStatements) {
                 preparedStatement.execute();
             }
-            System.out.println("Base de données initialisée avec succès!");
         } catch (SQLException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    private static ArrayList<String> getInitializationQueries() {
-        ArrayList<String> queries = new ArrayList<>();
-        queries.add("create table if not exists employes (identifiant varchar(12) not null primary key, nom varchar(255) not null, prenom varchar(255) not null, departement varchar(255) not null, motDePasse varchar(255) not null, poste varchar(50) not null);");
-        queries.add("create table if not exists sci (identifiant varchar(5) primary key not null, motDePasse varchar(255) not null);");
-        queries.add("create table if not exists canaux_diffusion (id serial primary key not null, titre varchar(50) not null);");
-        queries.add("create table if not exists abonnements (idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant), primary key (idCanal, idEmploye));");
-        queries.add("create table if not exists notification (id serial primary key not null, message varchar(255) not null, identifiantExpediteur varchar(12) not null references employes(identifiant), canalId int not null references canaux_diffusion(id));");
-        queries.add("create table if not exists entreprise (nom varchar(50) not null)");
-        queries.add(String.format("insert into sci (identifiant, motDePasse) values ('%s', '%s')",
-                "admin", BCrypt.hashpw("admin", BCrypt.gensalt())));
-        return queries;
     }
 }

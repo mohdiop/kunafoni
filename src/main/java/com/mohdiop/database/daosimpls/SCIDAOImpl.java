@@ -42,7 +42,7 @@ public class SCIDAOImpl implements SCIDAO {
         );
     }
 
-    private Boolean isAlreadyCreatedSCI() throws SQLException {
+    public Boolean isAlreadyCreatedSCI() throws SQLException {
         String query = "select * from sci";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();

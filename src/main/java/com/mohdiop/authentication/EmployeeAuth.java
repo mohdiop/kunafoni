@@ -12,10 +12,10 @@ public class EmployeeAuth implements Authentication {
 
     @Override
     public Boolean login(String identifiant, String password) throws SQLException {
-        Employe employe = employesDAO.getEmployeeById(identifiant);
-        if(employe == null){
-            return false;
+        Employe employee = employesDAO.getEmployeeById(identifiant);
+        if (employee == null) {
+            return null;
         }
-        return BCrypt.checkpw(password, employe.getMotDePasse());
+        return BCrypt.checkpw(password, employee.getMotDePasse());
     }
 }

@@ -14,7 +14,7 @@ public class Employe {
         this.identifiant = identifiant;
         this.nom = nom;
         this.prenom = prenom;
-        this.motDePasse = BCrypt.hashpw(motDePasse, BCrypt.gensalt());
+        this.motDePasse = motDePasse;
         this.poste = poste;
         this.departement = departement;
     }

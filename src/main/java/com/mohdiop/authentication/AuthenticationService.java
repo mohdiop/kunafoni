@@ -7,7 +7,16 @@ public class AuthenticationService{
     private String identifiant;
     private String password;
 
-    public AuthenticationService(Authentication user, String identifiant, String password){
+    private static volatile AuthenticationService instance;
+
+    public static synchronized AuthenticationService getInstance() {
+        if(instance == null) {
+            instance = new AuthenticationService(null,"","");
+        }
+        return instance;
+    }
+
+    private AuthenticationService(Authentication user, String identifiant, String password){
         this.user = user;
         this.identifiant = identifiant;
         this.password = password;
@@ -17,15 +26,18 @@ public class AuthenticationService{
         return user.login(identifiant, password);
     }
 
-    public void setUser(Authentication user) {
+    public AuthenticationService setUser(Authentication user) {
         this.user = user;
+        return this;
     }
 
-    public void setIdentifiant(String identifiant) {
+    public AuthenticationService setIdentifiant(String identifiant) {
         this.identifiant = identifiant;
+        return this;
     }
 
-    public void setPassword(String password) {
+    public AuthenticationService setPassword(String password) {
         this.password = password;
+        return this;
     }
 }

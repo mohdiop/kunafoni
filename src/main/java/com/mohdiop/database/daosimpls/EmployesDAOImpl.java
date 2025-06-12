@@ -28,7 +28,7 @@ public class EmployesDAOImpl implements EmployesDAO {
                     resultSet.getString("prenom"),
                     resultSet.getString("poste"),
                     resultSet.getString("departement"));
-        }else {
+        } else {
             return null;
         }
     }
