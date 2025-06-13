@@ -8,7 +8,7 @@ public class PasswordGenerator {
     private static final String UPPER_CASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String NUMBERS = "0123456789";
-    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_-+=[{}]|;:'\",<.>/?";
+    private static final String SPECIAL_CHARACTERS = "!@#$%^&*()_-+=[{}]|;:\",<.>/?";
 
     public static String generateRandomPassword() {
         int length = 8;

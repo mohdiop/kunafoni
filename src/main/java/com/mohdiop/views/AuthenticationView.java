@@ -3,6 +3,7 @@ package com.mohdiop.views;
 import com.mohdiop.authentication.AuthenticationService;
 import com.mohdiop.authentication.EmployeeAuth;
 import com.mohdiop.authentication.SCIAuth;
+import com.mohdiop.database.daosimpls.LaunchDAOImpl;
 import com.mohdiop.views.employee.EmployeeMain;
 import com.mohdiop.views.sci.SCIMain;
 
@@ -47,7 +48,11 @@ public class AuthenticationView {
             System.out.println("Veuillez entrer votre mot de passe : ");
             isAuthenticated = auth.setPassword(sc.nextLine()).authenticate();
         }
-        SCIMain.sciMain();
+        LaunchDAOImpl launchDAO = new LaunchDAOImpl();
+        if(launchDAO.getFirstLaunchValue()){
+            SCIMain.firstLaunch();
+            launchDAO.updateFirstValue(false);
+        }
     }
 
     private static void employeeAuth() throws SQLException {

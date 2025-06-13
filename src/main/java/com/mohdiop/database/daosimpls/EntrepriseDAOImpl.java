@@ -31,7 +31,7 @@ public class EntrepriseDAOImpl implements EntrepriseDAO {
 
     @Override
     public Boolean addEnterprise(String nom) throws SQLException {
-        if (!isAlreadyCreatedEntreprise()) {
+        if (!isAlreadyCreatedEnterprise()) {
             String query = String.format("insert into entreprise (nom) values ('%s')", nom);
             PreparedStatement preparedStatement = pg.prepareStatement(query);
             preparedStatement.execute();
@@ -41,7 +41,7 @@ public class EntrepriseDAOImpl implements EntrepriseDAO {
         }
     }
 
-    private Boolean isAlreadyCreatedEntreprise() throws SQLException {
+    public Boolean isAlreadyCreatedEnterprise() throws SQLException {
         String query = "select * from entreprise";
         PreparedStatement preparedStatement = pg.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
