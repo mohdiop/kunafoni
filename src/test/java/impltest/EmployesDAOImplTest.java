@@ -19,6 +19,7 @@ public class EmployesDAOImplTest {
                 BCrypt.hashpw("123", BCrypt.gensalt()),
                 "Nom",
                 "Prénom",
+                "exemple@exemple.com",
                 "Poste",
                 "Département"
         ))) {

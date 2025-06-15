@@ -4,7 +4,6 @@ import com.mohdiop.database.PostgresDB;
 import com.mohdiop.database.daos.EmployesDAO;
 import com.mohdiop.database.models.Employe;
 import com.mohdiop.utilities.Utilities;
-import jdk.jshell.execution.Util;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,6 +25,7 @@ public class EmployesDAOImpl implements EmployesDAO {
                     resultSet.getString("motDePasse"),
                     resultSet.getString("nom"),
                     resultSet.getString("prenom"),
+                    resultSet.getString("email"),
                     resultSet.getString("poste"),
                     resultSet.getString("departement"));
         } else {
@@ -44,6 +44,7 @@ public class EmployesDAOImpl implements EmployesDAO {
                     resultSet.getString("motDePasse"),
                     resultSet.getString("nom"),
                     resultSet.getString("prenom"),
+                    resultSet.getString("email"),
                     resultSet.getString("poste"),
                     resultSet.getString("departement")));
         }
@@ -61,6 +62,7 @@ public class EmployesDAOImpl implements EmployesDAO {
                     resultSet.getString("motDePasse"),
                     resultSet.getString("nom"),
                     resultSet.getString("prenom"),
+                    resultSet.getString("email"),
                     resultSet.getString("poste"),
                     resultSet.getString("departement")));
         }
@@ -107,11 +109,29 @@ public class EmployesDAOImpl implements EmployesDAO {
             newEmployee.setIdentifiant("kunafoni-"+ Utilities.generateIdentifiantNumber());
             return addNewEmployee(newEmployee);
         } else {
-            String query = String.format("insert into employes (identifiant, nom, prenom, motDePasse, poste, departement) values ('%s', '%s', '%s', '%s', '%s', '%s')",
-                    newEmployee.getIdentifiant(), newEmployee.getNom(), newEmployee.getPrenom(), newEmployee.getMotDePasse(), newEmployee.getPoste(), newEmployee.getDepartement());
+            String query = String.format("insert into employes (identifiant, nom, prenom, email, motDePasse, poste, departement) values ('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                    newEmployee.getIdentifiant(), newEmployee.getNom(), newEmployee.getPrenom(), newEmployee.getEmail(), newEmployee.getMotDePasse(), newEmployee.getPoste(), newEmployee.getDepartement());
             PreparedStatement preparedStatement = pg.prepareStatement(query);
             preparedStatement.execute();
             return true;
+        }
+    }
+
+    @Override
+    public Employe getEmployeeByEmail(String email) throws SQLException {
+        String query = "select * from employes where email = '" + email + "'";
+        PreparedStatement preparedStatement = pg.prepareStatement(query);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if(resultSet.next()){
+            return new Employe(resultSet.getString("identifiant"),
+                    resultSet.getString("motDePasse"),
+                    resultSet.getString("nom"),
+                    resultSet.getString("prenom"),
+                    resultSet.getString("email"),
+                    resultSet.getString("poste"),
+                    resultSet.getString("departement"));
+        } else {
+            return null;
         }
     }
 

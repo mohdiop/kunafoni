@@ -7,13 +7,15 @@ public class Employe {
     private String motDePasse;
     private String nom;
     private String prenom;
+    private String email;
     private String poste;
     private String departement;
 
-    public Employe(String identifiant, String motDePasse, String nom, String prenom, String poste, String departement){
+    public Employe(String identifiant, String motDePasse, String nom, String prenom, String email, String poste, String departement){
         this.identifiant = identifiant;
         this.nom = nom;
         this.prenom = prenom;
+        this.email = email;
         this.motDePasse = motDePasse;
         this.poste = poste;
         this.departement = departement;
@@ -65,5 +67,13 @@ public class Employe {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

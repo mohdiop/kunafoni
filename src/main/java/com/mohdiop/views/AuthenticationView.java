@@ -24,7 +24,13 @@ public class AuthenticationView {
                 sciAuth();
                 break;
             case 2:
-                employeeAuth();
+                LaunchDAOImpl launchDAO = new LaunchDAOImpl();
+                if(!launchDAO.getFirstLaunchValue()){
+                    employeeAuth();
+                } else {
+                    System.out.println("Système non configuré! Aucun employé dans le système");
+                    authenticationScreen();
+                }
                 break;
             default:
                 break;
@@ -52,6 +58,8 @@ public class AuthenticationView {
         if(launchDAO.getFirstLaunchValue()){
             SCIMain.firstLaunch();
             launchDAO.updateFirstValue(false);
+        } else {
+            SCIMain.sciMainInterface();
         }
     }
 

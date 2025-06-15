@@ -38,7 +38,7 @@ public class PostgresDB {
 
     private static ArrayList<String> getInitializationQueries() throws SQLException {
         ArrayList<String> queries = new ArrayList<>();
-        queries.add("create table if not exists employes (identifiant varchar(12) not null primary key, nom varchar(255) not null, prenom varchar(255) not null, departement varchar(255) not null, motDePasse varchar(255) not null, poste varchar(50) not null);");
+        queries.add("create table if not exists employes (identifiant varchar(12) not null primary key, nom varchar(255) not null, prenom varchar(255) not null, email varchar(255) not null unique, departement varchar(255) not null, motDePasse varchar(255) not null, poste varchar(50) not null);");
         queries.add("create table if not exists sci (identifiant varchar(5) primary key not null, motDePasse varchar(255) not null);");
         queries.add("create table if not exists canaux_diffusion (id serial primary key not null, titre varchar(50) not null);");
         queries.add("create table if not exists abonnements (idCanal int not null references canaux_diffusion(id), idEmploye varchar(12) not null references employes(identifiant), primary key (idCanal, idEmploye));");
