@@ -6,6 +6,9 @@ import com.mohdiop.database.daosimpls.EmployesDAOImpl;
 import com.mohdiop.database.daosimpls.EntrepriseDAOImpl;
 import com.mohdiop.database.models.CanalDiffusion;
 import com.mohdiop.database.models.Employe;
+import com.mohdiop.notification.observers.ConsoleNotification;
+import com.mohdiop.notification.observers.EmailNotification;
+import com.mohdiop.notification.subject.NotificationSubjectImpl;
 import com.mohdiop.utilities.PasswordGenerator;
 import com.mohdiop.utilities.Utilities;
 import com.mohdiop.views.AuthenticationView;
@@ -61,6 +64,7 @@ public class SCIMain {
         int choice = scanner.nextInt();
         switch (choice) {
             case 1:
+                sendMessage();
                 break;
             case 2:
                 addChannel(1);
@@ -84,6 +88,31 @@ public class SCIMain {
                 sciMainInterface();
                 break;
         }
+    }
+
+    private static void sendMessage() throws SQLException {
+        System.out.println("Envoi de message");
+        CanalDiffusionDAOImpl canalDiffusionDAO = new CanalDiffusionDAOImpl();
+        ArrayList<CanalDiffusion> channels = canalDiffusionDAO.getAllCanal();
+        int i = 0;
+        System.out.println("Veuillez choisir le canal");
+        System.out.println("\n---------------------------------------------");
+        for (CanalDiffusion channel : channels){
+            i++;
+            System.out.printf("%d : %s", i, channel.getTitre());
+            System.out.println("\n---------------------------------------------");
+        }
+        Scanner scanner = new Scanner(System.in);
+        int choice = scanner.nextInt();
+        while(choice > channels.size() || choice == 0){
+            System.out.println("Choix invalide!");
+            System.out.println("Choisissez le numéro d'un canal pour abonner des employés :");
+            choice = scanner.nextInt();
+        }
+        CanalDiffusion channel = channels.get(choice);
+        NotificationSubjectImpl notificationSubject = new NotificationSubjectImpl();
+        notificationSubject.addObserver(new EmailNotification());
+        notificationSubject.addObserver(new ConsoleNotification());
     }
 
     private static void showChannels() throws SQLException{
